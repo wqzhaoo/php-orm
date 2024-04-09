@@ -46,7 +46,9 @@ class TableObjectGeneration
         if ($this->client instanceof ClientInterface) {
             $data = $this->client->query($query);
         } else {
-            $data = $this->connection->defer()->query($query);
+            $data = $this->connection->invoke(function (MysqliClient $client) use ($query) {
+                return $client->query($query);
+            });
         }
 
         if ($this->connection->getConfig()->isFetchMode()) {
