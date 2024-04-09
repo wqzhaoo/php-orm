@@ -11,4 +11,5 @@ interface ConnectionInterface
     function defer(float $timeout = null):?ClientInterface;
     function __getClientPool():AbstractPool;
     function getConfig():?Config;
+    public function invoke(callable $call, float $timeout = null);
 }

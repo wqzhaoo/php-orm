@@ -1,4 +1,6 @@
-Easyswoole-ORM
+# EASYSWOOLE ORM
+
+A component for operate database for easyswoole
 
 ## 项目背景
 
@@ -19,7 +21,7 @@ Easyswoole-ORM
 ## 安装
 
 ```
-composer require easyswoole/orm
+composer require easy-swoole-php/orm
 ```
 
 ## RFC

@@ -31,7 +31,6 @@ class Connection implements ConnectionInterface
         return $this->getPool();
     }
 
-
     protected function getPool():MysqlPool
     {
         if(!$this->pool){
@@ -46,5 +45,14 @@ class Connection implements ConnectionInterface
     public function getConfig():?Config
     {
         return $this->config;
+    }
+
+    public function invoke(callable $call, float $timeout = null)
+    {
+        if ($timeout === null) {
+            $timeout = $this->config->getGetObjectTimeout();
+        }
+
+        return $this->getPool()->invoke($call, $timeout);
     }
 }
