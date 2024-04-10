@@ -1,5 +1,5 @@
 {
-    "name": "easyapi/es-mysql-orm",
+    "name": "easy-swoole-php/orm",
     "type": "library",
     "description": "php stander lib",
     "keywords": [
