@@ -14,8 +14,8 @@ use EasySwoole\ORM\AbstractModel;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Tests\models\TestUserListModel;
+use PHPUnit\Framework\TestCase;
 
 class CoherentTest extends TestCase
 {
@@ -23,7 +23,6 @@ class CoherentTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

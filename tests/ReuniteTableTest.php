@@ -7,7 +7,6 @@ use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Tests\models\ReuniteTableModel;
 use PHPUnit\Framework\TestCase;
-use EasySwoole\Mysqli\QueryBuilder;
 
 class ReuniteTableTest extends TestCase
 {
@@ -15,7 +14,6 @@ class ReuniteTableTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'reunite_table';
 
     protected function setUp(): void
     {
@@ -25,25 +23,8 @@ class ReuniteTableTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
-        $this->createTestTable();
-    }
 
-    function createTestTable()
-    {
-        $query = new QueryBuilder();
-        $sql = <<<sql
-CREATE TABLE If Not Exists `reunite_table`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pk_1` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `pk_2` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`pk_1`, `pk_2`) USING BTREE,
-  INDEX `id`(`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-sql;
-
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-        $this->assertTrue($data->getResult());
+        ReuniteTableModel::create();
     }
 
     /**

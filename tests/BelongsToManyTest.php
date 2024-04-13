@@ -10,15 +10,14 @@ namespace EasySwoole\ORM\Tests;
 
 use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\AbstractModel;
-use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
+use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Tests\models\Roles;
 use EasySwoole\ORM\Tests\models\UserInfo;
 use EasySwoole\ORM\Tests\models\UserRole;
 use EasySwoole\ORM\Tests\models\UserRoleDifferentField;
 use EasySwoole\ORM\Tests\models\Users;
-use EasySwoole\ORM\Utility\Schema\Table;
 use PHPUnit\Framework\TestCase;
 
 class BelongsToManyTest extends TestCase
@@ -32,112 +31,17 @@ class BelongsToManyTest extends TestCase
     {
         parent::setUp();
 
-        $config           = new Config(MYSQL_CONFIG);
+        $config = new Config(MYSQL_CONFIG);
         $this->connection = new Connection($config);
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
 
-        $this->createUsersTable();
-        $this->createMiddleTable();
-        $this->createRoleTable();
-        $this->createUserInfoTable();
-    }
-
-    // 创建三个关联表
-    public function createUsersTable()
-    {
-        $sql   = "SHOW TABLES LIKE 'users';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('users');
-            $tableDDL->colInt('user_id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colVarChar('name', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-    }
-
-    public function createMiddleTable()
-    {
-        $sql   = "SHOW TABLES LIKE 'user_role';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('user_role');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colInt('user_id', 11);
-            $tableDDL->colInt('role_id', 11);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-        // 创建一个中间表，主键名不同的
-        $sql   = "SHOW TABLES LIKE 'user_role_different_field';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('user_role_different_field');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colInt('u_id', 11);
-            $tableDDL->colInt('r_id', 11);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-    }
-
-    public function createRoleTable()
-    {
-        $sql   = "SHOW TABLES LIKE 'roles';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('roles');
-            $tableDDL->colInt('role_id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colVarChar('role_name', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-    }
-
-    public function createUserInfoTable()
-    {
-        $sql   = "SHOW TABLES LIKE 'user_info';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('user_info');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colInt('user_id', 11);
-            $tableDDL->colVarChar('user_email', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
+        UserInfo::create();
+        UserRole::create();
+        UserRoleDifferentField::create();
+        Users::create();
+        Roles::create();
     }
 
     public function testInsert()
@@ -163,7 +67,7 @@ class BelongsToManyTest extends TestCase
 
     private function truncateTable(string $table)
     {
-        $sql     = "truncate {$table}";
+        $sql = "truncate {$table}";
         $builder = new QueryBuilder();
         $builder->raw($sql);
         DbManager::getInstance()->query($builder, true);
@@ -375,33 +279,33 @@ class BelongsToManyTest extends TestCase
         $this->mockInsert();
 
         $user = Users::create()
-                     ->alias('users')
-                     ->where('users.name', 'SiamBelongsToManySimpleRole')
-                     ->with(['roles'])
-                     ->join('user_info user_info', 'users.user_id = user_info.user_id', 'INNER')
-                     ->get();
+            ->alias('users')
+            ->where('users.name', 'SiamBelongsToManySimpleRole')
+            ->with(['roles'])
+            ->join('user_info user_info', 'users.user_id = user_info.user_id', 'INNER')
+            ->get();
         $this->assertInstanceOf(Users::class, $user);
         $this->assertEquals($user->toArray(false, false)['roles'][0]['role_name'], '管理员');
         $this->assertEquals($user->toArray(false, false)['user_email'], '1@qq.com');
 
         // 自定义键名
         $user = Users::create()
-                     ->alias('users')
-                     ->where('users.name', 'SiamBelongsToManySimpleRole')
-                     ->with(['roles_different_field'])
-                     ->join('user_info user_info', 'users.user_id = user_info.user_id', 'INNER')
-                     ->get();
+            ->alias('users')
+            ->where('users.name', 'SiamBelongsToManySimpleRole')
+            ->with(['roles_different_field'])
+            ->join('user_info user_info', 'users.user_id = user_info.user_id', 'INNER')
+            ->get();
         $this->assertInstanceOf(Users::class, $user);
         $this->assertEquals($user->toArray(false, false)['roles_different_field'][0]['role_name'], '管理员');
         $this->assertEquals($user->toArray(false, false)['user_email'], '1@qq.com');
 
         /** @var AbstractModel[] $user */
         $user = Users::create()
-                     ->alias('users')
-                     ->field('user_info.user_email')
-                     ->with(['roles_join'])
-                     ->join('user_info as user_info', 'users.user_id = user_info.user_id', 'INNER')
-                     ->all();
+            ->alias('users')
+            ->field('user_info.user_email')
+            ->with(['roles_join'])
+            ->join('user_info as user_info', 'users.user_id = user_info.user_id', 'INNER')
+            ->all();
         $this->assertIsArray($user);
         $this->assertTrue(count($user) > 0);
         foreach ($user as $k => $v) {

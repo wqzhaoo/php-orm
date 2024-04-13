@@ -9,10 +9,14 @@
 namespace EasySwoole\ORM\Tests\models;
 
 
+use EasySwoole\DDL\Blueprint\Table;
+use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\AbstractModel;
+use EasySwoole\ORM\DbManager;
 
 /**
  * Class TestCastsModel
+ *
  * @package EasySwoole\ORM\Tests
  * @property $id
  * @property $name
@@ -43,4 +47,26 @@ class TestCastsModel extends AbstractModel
         'test_datetime' => 'datetime',
         'test_string'   => 'string',
     ];
+
+    public function __construct(array $data = [])
+    {
+        $sql = "SHOW TABLES LIKE '{$this->tableName}';";
+        $query = new QueryBuilder();
+        $query->raw($sql);
+        $result = DbManager::getInstance()->query($query)->getResult();
+        if (empty($result)) {
+            $tableDDL = new Table($this->tableName);
+            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
+            $tableDDL->colVarChar('name', 255);
+            $tableDDL->colTinyInt('age', 1);
+            $tableDDL->colDateTime('addTime');
+            $tableDDL->colTinyInt('state', 1);
+            $tableDDL->setIfNotExists();
+            $sql = $tableDDL->__createDDL();
+            $query->raw($sql);
+            DbManager::getInstance()->query($query);
+        }
+
+        parent::__construct($data);
+    }
 }

@@ -11,10 +11,9 @@ use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use EasySwoole\ORM\Exception\Exception;
 use EasySwoole\ORM\Tests\models\DuplicateModel;
-use PHPUnit\Framework\TestCase;
 use mysqli_sql_exception;
+use PHPUnit\Framework\TestCase;
 
 class DuplicateTest extends TestCase
 {
@@ -33,6 +32,8 @@ class DuplicateTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        DuplicateModel::create();
     }
 
     public function testAdd()

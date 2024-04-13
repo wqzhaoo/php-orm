@@ -11,8 +11,8 @@ namespace EasySwoole\ORM\Tests;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Tests\models\TestTimeStampModel;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class TestUserModel
@@ -29,7 +29,6 @@ class TimeStampTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {
@@ -39,6 +38,8 @@ class TimeStampTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestTimeStampModel::create();
     }
 
     /**
@@ -69,7 +70,7 @@ class TimeStampTest extends TestCase
         ]);
         $user->age = 22;
         $time = $user->update_at;
-        sleep(1);
+        \co::sleep(1);
         $user->update();
         $this->assertTrue(($user->update_at - $time) > 0);
     }

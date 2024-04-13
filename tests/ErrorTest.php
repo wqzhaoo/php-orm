@@ -12,13 +12,13 @@ use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Exception\Exception;
+use EasySwoole\ORM\Tests\models\TestUserModel;
 use PHPUnit\Framework\TestCase;
 
 
-use EasySwoole\ORM\Tests\models\TestUserModel;
-
 /**
  * Class ErrorTest
+ *
  * @package EasySwoole\ORM\Tests
  */
 class ErrorTest extends TestCase
@@ -27,7 +27,6 @@ class ErrorTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

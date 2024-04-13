@@ -9,14 +9,11 @@
 namespace EasySwoole\ORM\Tests\Swoole5x;
 
 use EasySwoole\ORM\Db\Config;
-use EasySwoole\ORM\Db\Cursor;
-use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Db\Connection;
-use Swoole\Coroutine\MySQL\Statement;
-
-
+use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Tests\models\TestUserModel;
+use PHPUnit\Framework\TestCase;
+
 
 class CursorTest extends TestCase
 {
@@ -41,40 +38,28 @@ class CursorTest extends TestCase
 
     public function testAdd()
     {
-        if (version_compare(swoole_version(), '5.0.0', '>=')) {
-            $this->assertSame(1, 1);
-            return;
-        }
+//        if (version_compare(swoole_version(), '5.0.0', '>=')) {
+//            $this->assertSame(1, 1);
+//            return;
+//        }
 
         $testUserModel = new TestUserModel();
         $testUserModel->state = 1;
         $testUserModel->name = 'Siam';
         $testUserModel->age = 18;
         $testUserModel->addTime = date('Y-m-d H:i:s');
-        $data = $testUserModel->save(false, false);
+        $data = $testUserModel->save();
         $this->assertIsInt($data);
     }
 
     public function testQuery()
     {
-        if (version_compare(swoole_version(), '5.0.0', '>=')) {
-            $this->assertSame(1, 1);
-            return;
-        }
+//        if (version_compare(swoole_version(), '5.0.0', '>=')) {
+//            $this->assertSame(1, 1);
+//            return;
+//        }
 
-        $cursor = TestUserModel::create()->all();
-        $this->assertInstanceOf(Cursor::class, $cursor);
-    }
-
-    public function testCursorNotArray()
-    {
-        if (version_compare(swoole_version(), '5.0.0', '>=')) {
-            $this->assertSame(1, 1);
-            return;
-        }
-
-        $cursor = TestUserModel::create()->all();
-        $item = $cursor->fetch();
-        $this->assertInstanceOf(TestUserModel::class, $item);
+        $result = TestUserModel::create()->all();
+        $this->assertIsArray($result);
     }
 }

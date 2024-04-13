@@ -9,11 +9,14 @@
 namespace EasySwoole\ORM\Tests\models;
 
 
+use EasySwoole\DDL\Blueprint\Table;
+use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\AbstractModel;
-use EasySwoole\Utility\Str;
+use EasySwoole\ORM\DbManager;
 
 /**
  * Class TestUserModel
+ *
  * @package EasySwoole\ORM\Tests
  * @property $id
  * @property $name
@@ -23,7 +26,32 @@ use EasySwoole\Utility\Str;
  */
 class TestUserListGetterModel extends AbstractModel
 {
-    protected $tableName='user_test_list';
+    protected $tableName = 'user_test_list';
+
+    public function __construct(array $data = [])
+    {
+        $sql = "SHOW TABLES LIKE '{$this->tableName}';";
+        $query = new QueryBuilder();
+        $query->raw($sql);
+        $result = DbManager::getInstance()->query($query)->getResult();
+        if (empty($result)) {
+            $query = new QueryBuilder();
+            $tableDDL = new Table($this->tableName);
+            $tableDDL->setIfNotExists();
+            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
+            $tableDDL->colVarChar('name', 255);
+            $tableDDL->colTinyInt('age', 1);
+            $tableDDL->colDateTime('addTime');
+            $tableDDL->colTinyInt('state', 1);
+            $tableDDL->setIfNotExists();
+
+            $sql = $tableDDL->__createDDL();
+            $query->raw($sql);
+            DbManager::getInstance()->query($query);
+        }
+
+        parent::__construct($data);
+    }
 
     public function getAddTimeAttr()
     {

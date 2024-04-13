@@ -11,11 +11,10 @@ namespace EasySwoole\ORM\Tests;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
-
-
 use EasySwoole\ORM\Tests\models\TestUserListModel;
 use EasySwoole\ORM\Tests\models\TestUserModel;
+use PHPUnit\Framework\TestCase;
+
 
 class CoherentJoinTest extends TestCase
 {
@@ -23,7 +22,6 @@ class CoherentJoinTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

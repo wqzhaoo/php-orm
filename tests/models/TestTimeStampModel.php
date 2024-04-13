@@ -16,6 +16,7 @@ use EasySwoole\ORM\Utility\Schema\Table;
 
 /**
  * Class TestTimeStampModel
+ *
  * @package EasySwoole\ORM\Tests
  * @property mixed $id
  * @property mixed $name
@@ -27,19 +28,49 @@ use EasySwoole\ORM\Utility\Schema\Table;
  */
 class TestTimeStampModel extends AbstractModel
 {
-    protected $tableName='tiamstamp_test';
+    protected $tableName = 'tiamstamp_test';
 
     protected $autoTimeStamp = true;
     protected $createTime = 'create_at';
     protected $updateTime = 'update_at';
 
-    public function setAutoTime($value){
+    public function __construct(array $data = [])
+    {
+        $sql = "SHOW TABLES LIKE '{$this->tableName}';";
+        $query = new QueryBuilder();
+        $query->raw($sql);
+        $result = DbManager::getInstance()->query($query)->getResult();
+        if (empty($result)) {
+            $tableDDL = new Table($this->tableName);
+            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
+            $tableDDL->colVarChar('name', 255);
+            $tableDDL->colTinyInt('age', 1);
+            $tableDDL->colDateTime('create_time')->setIsNotNull(false);
+            $tableDDL->colDateTime('update_time')->setIsNotNull(false);
+            $tableDDL->colInt('create_at', 10)->setIsNotNull(false);
+            $tableDDL->colInt('update_at', 10)->setIsNotNull(false);
+            $tableDDL->setIfNotExists();
+
+            $sql = $tableDDL->__createDDL();
+            $query->raw($sql);
+            DbManager::getInstance()->query($query);
+        }
+
+        parent::__construct($data);
+    }
+
+    public function setAutoTime($value)
+    {
         $this->autoTimeStamp = $value;
     }
-    public function setCreateTime($value){
+
+    public function setCreateTime($value)
+    {
         $this->createTime = $value;
     }
-    public function setUpdateTime($value){
+
+    public function setUpdateTime($value)
+    {
         $this->updateTime = $value;
     }
 }

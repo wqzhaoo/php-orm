@@ -12,8 +12,8 @@ use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Exception\Exception;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Tests\models\TestUserEventModel;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ErrorTest
@@ -25,7 +25,6 @@ class EventTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

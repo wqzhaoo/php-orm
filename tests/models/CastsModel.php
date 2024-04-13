@@ -26,21 +26,25 @@ class CastsModel extends AbstractModel
 
     public function __construct(array $data = [])
     {
-        $table = new Table('casts');
-        $table->setIfNotExists();
-        $table->int('id')->setIsPrimaryKey(true)->setIsAutoIncrement(true);
-        $table->int('int_value', 11);
-        $table->float('float_value', 10, 2);
-        $table->char('json_value', 100);
-        $table->char('array_value', 100);
-        $table->date('date_value');
-        $table->datetime('datetime_value');
-        $table->int('timestamp_value', 11);
-
-        $builder = new QueryBuilder();
-        $builder->raw($table->__toString());
-
-        DbManager::getInstance()->query($builder);
+        $sql = "SHOW TABLES LIKE '{$this->tableName}';";
+        $query = new QueryBuilder();
+        $query->raw($sql);
+        $result = DbManager::getInstance()->query($query)->getResult();
+        if (empty($result)) {
+            $table = new Table($this->tableName);
+            $table->setIfNotExists();
+            $table->int('id')->setIsPrimaryKey(true)->setIsAutoIncrement(true);
+            $table->int('int_value', 11);
+            $table->float('float_value', 10, 2);
+            $table->char('json_value', 100);
+            $table->char('array_value', 100);
+            $table->date('date_value');
+            $table->datetime('datetime_value');
+            $table->int('timestamp_value', 11);
+            $sql = $table->__createDDL();
+            $query->raw($sql);
+            DbManager::getInstance()->query($query);
+        }
 
         parent::__construct($data);
     }

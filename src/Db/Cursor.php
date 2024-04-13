@@ -8,9 +8,7 @@
 
 namespace EasySwoole\ORM\Db;
 
-use EasySwoole\ORM\AbstractModel;
 use EasySwoole\ORM\Exception\Exception;
-use phpDocumentor\Reflection\Types\This;
 use Swoole\Coroutine\MySQL\Statement;
 
 class Cursor implements CursorInterface
@@ -24,7 +22,6 @@ class Cursor implements CursorInterface
         $this->statement = $statement;
     }
 
-
     public function setModelName(string $modelName)
     {
         $this->modelName = $modelName;
@@ -34,7 +31,6 @@ class Cursor implements CursorInterface
     {
         $this->returnAsArray = $returnAsArray;
     }
-
 
     /**
      * @return mixed

@@ -11,13 +11,12 @@ namespace EasySwoole\ORM\Tests;
 
 use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\ClientInterface;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-
-
 use EasySwoole\ORM\Tests\models\TestTimeStampModel;
+use PHPUnit\Framework\TestCase;
+
 
 class TransactionTest extends TestCase
 {
@@ -25,7 +24,6 @@ class TransactionTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {
@@ -37,6 +35,8 @@ class TransactionTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestTimeStampModel::create();
     }
 
     /**

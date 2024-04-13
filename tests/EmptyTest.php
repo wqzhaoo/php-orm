@@ -10,10 +10,9 @@ namespace EasySwoole\ORM\Tests;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
+use EasySwoole\ORM\Tests\models\TestUserListModel;
 use PHPUnit\Framework\TestCase;
 
-
-use EasySwoole\ORM\Tests\models\TestUserListModel;
 
 class EmptyTest extends TestCase
 {
@@ -21,7 +20,6 @@ class EmptyTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

@@ -11,8 +11,8 @@ namespace EasySwoole\ORM\Tests;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Tests\models\TestUserListModel;
+use PHPUnit\Framework\TestCase;
 
 class StrictTest extends TestCase
 {
@@ -20,7 +20,6 @@ class StrictTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {
@@ -30,6 +29,8 @@ class StrictTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestUserListModel::create();
     }
 
     public function testStrict()

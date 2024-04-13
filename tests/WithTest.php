@@ -1,4 +1,5 @@
 <?php
+
 namespace EasySwoole\ORM\Tests;
 
 use EasySwoole\Mysqli\QueryBuilder;
@@ -10,6 +11,7 @@ use EasySwoole\ORM\Tests\models\TestB;
 use EasySwoole\ORM\Tests\models\TestC;
 use EasySwoole\ORM\Tests\models\TestRelationModel;
 use EasySwoole\ORM\Tests\models\TestUserListModel;
+use EasySwoole\ORM\Tests\models\TestUserModel;
 use EasySwoole\ORM\Utility\Schema\Table;
 use PHPUnit\Framework\TestCase;
 
@@ -29,61 +31,12 @@ class WithTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
-        $this->creatTable();
-    }
 
-    public function creatTable()
-    {
-        // 主表a b副表 c为b副表
-        $sql = "SHOW TABLES LIKE 'test_a';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new \EasySwoole\DDL\Blueprint\Create\Table('test_a');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colVarChar('a_name', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-
-        $sql = "SHOW TABLES LIKE 'test_b';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('test_b');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colInt('a_id', 11);
-            $tableDDL->colVarChar('b_name', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-
-        $sql = "SHOW TABLES LIKE 'test_c';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('test_c');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colInt('b_id', 11);
-            $tableDDL->colVarChar('c_name', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
+        TestUserModel::create();
+        TestUserListModel::create();
+        TestA::create();
+        TestB::create();
+        TestC::create();
     }
 
     private function truncateTables()

@@ -116,7 +116,9 @@ class MysqliClient extends Client implements ClientInterface, ObjectInterface
 
                 // 结果设置
                 if ($ret && $this->config->isFetchMode()) {
-                    $result->setResult(new Cursor($stmt));
+                    if ($stmt instanceof Statement) {
+                        $result->setResult($stmt->fetchAll($timeout));
+                    }
                 } else {
                     $result->setResult($ret);
                 }

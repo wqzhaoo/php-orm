@@ -1,13 +1,12 @@
 <?php
+
 namespace EasySwoole\ORM\Tests;
 
-use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\AbstractModel;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Tests\models\TestWhereModel;
-use EasySwoole\ORM\Utility\Schema\Table;
 use PHPUnit\Framework\TestCase;
 
 
@@ -27,45 +26,28 @@ class WhereTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
-    }
 
-
-    public function testCreateTable()
-    {
-        $sql = "SHOW TABLES LIKE 'test_where';";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-
-        if (empty($data->getResult())) {
-            $tableDDL = new Table('test_where');
-            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-            $tableDDL->colVarChar('content', 255);
-            $tableDDL->setIfNotExists();
-            $sql = $tableDDL->__createDDL();
-            $query->raw($sql);
-            $data = $this->connection->defer()->query($query);
-            $this->assertTrue($data->getResult());
-        }
-
+        TestWhereModel::create();
     }
 
     public function testWhereIn()
     {
+        $ids = [];
         $ids[] = TestWhereModel::create(['content' => 'a,b,c'])->save();
         $ids[] = TestWhereModel::create(['content' => 'a,b,c,d'])->save();
         $ids[] = TestWhereModel::create(['content' => 'a,b,c,d,e'])->save();
 
-        $ret = TestWhereModel::create()->where('content', 'a,b,c')->get();
+        $model = TestWhereModel::create();
+        $ret = $model->where('content', 'a,b,c')->get();
         $this->assertInstanceOf(AbstractModel::class, $ret);
-        $this->assertEquals("SELECT  * FROM `test_where` WHERE  `content` = 'a,b,c'  LIMIT 1", DbManager::getInstance()->getLastQuery()->getLastQuery());
+        $this->assertEquals("SELECT  * FROM `test_where` WHERE  `content` = 'a,b,c'  LIMIT 1", $model->lastQuery()->getLastQuery());
         $this->assertEquals($ids[0], $ret->id);
 
-        $ret = TestWhereModel::create()->where('id', $ids, 'IN')->all();
+        $model = TestWhereModel::create();
+        $ret = $model->where('id', $ids, 'IN')->all();
         $idStrings = implode(', ', $ids);
-        $this->assertEquals("SELECT  * FROM `test_where` WHERE  `id` IN ( {$idStrings} ) ", DbManager::getInstance()->getLastQuery()->getLastQuery());
+        $this->assertEquals("SELECT  * FROM `test_where` WHERE  `id` IN ( {$idStrings} ) ", $model->lastQuery()->getLastQuery());
         $this->assertEquals($ids, array_column($ret->toArray(), 'id'));
-
 
         try {
             $idStrings = implode(', ', $ids);

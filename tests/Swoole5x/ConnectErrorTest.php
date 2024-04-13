@@ -20,10 +20,10 @@ class ConnectErrorTest extends TestCase
 {
     public function testConnectError1()
     {
-        if (version_compare(swoole_version(), '5.0.0', '>=')) {
-            $this->assertSame(1, 1);
-            return;
-        }
+//        if (version_compare(swoole_version(), '5.0.0', '>=')) {
+//            $this->assertSame(1, 1);
+//            return;
+//        }
 
         $config = new Config([
             'host'      => '127.0.0.1',

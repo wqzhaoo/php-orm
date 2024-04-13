@@ -11,8 +11,8 @@ namespace EasySwoole\ORM\Tests;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
 use EasySwoole\ORM\Tests\models\TestUserListGetterModel;
+use PHPUnit\Framework\TestCase;
 
 class SetterGetterTest extends TestCase
 {
@@ -20,7 +20,6 @@ class SetterGetterTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {
@@ -30,6 +29,8 @@ class SetterGetterTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestUserListGetterModel::create();
     }
 
     // 插入的时候会调用setter

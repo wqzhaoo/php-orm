@@ -8,12 +8,12 @@
 
 namespace EasySwoole\ORM\Tests;
 
-use PHPUnit\Framework\TestCase;
-use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
-use EasySwoole\ORM\Utility\Schema\Table;
+use EasySwoole\ORM\DbManager;
+use EasySwoole\ORM\Tests\models\TestTimeStampModel;
 use EasySwoole\ORM\Utility\TableObjectGeneration;
+use PHPUnit\Framework\TestCase;
 
 class TimeStampTableGenerationTest extends TestCase
 {
@@ -35,31 +35,11 @@ class TimeStampTableGenerationTest extends TestCase
         $config = new Config(MYSQL_CONFIG);
         $connection = new Connection($config);
         $this->connection = $connection;
+
+        DbManager::getInstance()->addConnection($this->connection);
+        TestTimeStampModel::create();
+
         $this->generation = new TableObjectGeneration($connection, $this->tableName);
-        $this->createTestTable();
-    }
-
-    function createTestTable()
-    {
-        $sql = "DROP TABLE  if exists {$this->tableName};";
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-        $this->assertTrue($data->getResult());
-
-        $tableDDL = new Table($this->tableName);
-        $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-        $tableDDL->colVarChar('name', 255);
-        $tableDDL->colTinyInt('age', 1);
-        $tableDDL->colDateTime('create_time')->setIsNotNull(false);
-        $tableDDL->colDateTime('update_time')->setIsNotNull(false);
-        $tableDDL->colInt('create_at', 10)->setIsNotNull(false);
-        $tableDDL->colInt('update_at', 10)->setIsNotNull(false);
-        $tableDDL->setIfNotExists();
-        $sql = $tableDDL->__createDDL();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-        $this->assertTrue($data->getResult());
     }
 
     function testGetTableInfo()

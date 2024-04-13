@@ -12,11 +12,10 @@ use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
-
-
 use EasySwoole\ORM\Tests\models\TestUserListModel;
 use EasySwoole\ORM\Tests\models\TestUserModel;
+use PHPUnit\Framework\TestCase;
+
 
 class ClosureTest extends TestCase
 {
@@ -24,7 +23,6 @@ class ClosureTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

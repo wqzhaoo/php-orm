@@ -13,10 +13,10 @@ use EasySwoole\DDL\Blueprint\Table;
 use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\AbstractModel;
 use EasySwoole\ORM\DbManager;
-use EasySwoole\Utility\Str;
 
 /**
  * Class TestUserModel
+ *
  * @package EasySwoole\ORM\Tests
  * @property $id
  * @property $name
@@ -26,7 +26,7 @@ use EasySwoole\Utility\Str;
  */
 class TestUserListModel extends AbstractModel
 {
-    protected $tableName='user_test_list';
+    protected $tableName = 'user_test_list';
 
     /**
      * 非模型属性字段 获取器，可用于append
@@ -38,19 +38,25 @@ class TestUserListModel extends AbstractModel
 
     public function __construct(array $data = [])
     {
+        $sql = "SHOW TABLES LIKE '{$this->tableName}';";
         $query = new QueryBuilder();
-        $tableDDL = new Table($this->tableName);
-        $tableDDL->setIfNotExists();
-        $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-        $tableDDL->colVarChar('name', 255);
-        $tableDDL->colTinyInt('age', 1);
-        $tableDDL->colDateTime('addTime');
-        $tableDDL->colTinyInt('state', 1);
-        $tableDDL->setIfNotExists();
-
-        $sql = $tableDDL->__createDDL();
         $query->raw($sql);
-        DbManager::getInstance()->query($query);
+        $result = DbManager::getInstance()->query($query)->getResult();
+        if (empty($result)) {
+            $query = new QueryBuilder();
+            $tableDDL = new Table($this->tableName);
+            $tableDDL->setIfNotExists();
+            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
+            $tableDDL->colVarChar('name', 255);
+            $tableDDL->colTinyInt('age', 1);
+            $tableDDL->colDateTime('addTime');
+            $tableDDL->colTinyInt('state', 1);
+            $tableDDL->setIfNotExists();
+
+            $sql = $tableDDL->__createDDL();
+            $query->raw($sql);
+            DbManager::getInstance()->query($query);
+        }
 
         parent::__construct($data);
     }

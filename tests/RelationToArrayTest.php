@@ -11,9 +11,9 @@ namespace EasySwoole\ORM\Tests;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
-use PHPUnit\Framework\TestCase;
-use EasySwoole\ORM\Tests\models\TestUserListModel;
 use EasySwoole\ORM\Tests\models\TestRelationModel;
+use EasySwoole\ORM\Tests\models\TestUserListModel;
+use PHPUnit\Framework\TestCase;
 
 class RelationToArrayTest extends TestCase
 {
@@ -22,7 +22,6 @@ class RelationToArrayTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {

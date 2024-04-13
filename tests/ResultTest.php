@@ -4,12 +4,13 @@
  */
 namespace EasySwoole\ORM\Tests;
 
+use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Tests\models\TestRelationModel;
+use EasySwoole\ORM\Tests\models\TestUserListModel;
 use PHPUnit\Framework\TestCase;
-use EasySwoole\Mysqli\QueryBuilder;
 
 class ResultTest extends TestCase
 {
@@ -27,6 +28,8 @@ class ResultTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestUserListModel::create();
         $this->connection->defer()->query((new QueryBuilder())->raw('TRUNCATE TABLE ' . $this->tableName));
         $this->connection->defer()->query(
             (new QueryBuilder())

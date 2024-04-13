@@ -20,7 +20,6 @@ class TransactionWithCountTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
     private $lastId;
 
     protected function setUp(): void
@@ -31,6 +30,8 @@ class TransactionWithCountTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestCastsModel::create();
     }
 
     public function testClear()

@@ -13,11 +13,10 @@ use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
+use EasySwoole\ORM\Tests\models\TestUserModel;
 use EasySwoole\ORM\Utility\Schema\Table;
 use PHPUnit\Framework\TestCase;
 
-
-use EasySwoole\ORM\Tests\models\TestUserModel;
 
 class ModelTest extends TestCase
 {
@@ -25,8 +24,6 @@ class ModelTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-
-    protected $tableName = 'test_user_model';
 
     protected function setUp(): void
     {
@@ -38,23 +35,8 @@ class ModelTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
-        $this->createTestTable();
-    }
 
-    public function createTestTable()
-    {
-        $query = new QueryBuilder();
-        $tableDDL = new Table($this->tableName);
-        $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-        $tableDDL->colVarChar('name', 255);
-        $tableDDL->colTinyInt('age', 1);
-        $tableDDL->colDateTime('addTime');
-        $tableDDL->colTinyInt('state', 1);
-        $tableDDL->setIfNotExists();
-        $sql = $tableDDL->__createDDL();
-        $query->raw($sql);
-        $data = $this->connection->defer()->query($query);
-        $this->assertTrue($data->getResult());
+        TestUserModel::create();
     }
 
     public function testGetSchemaInfo()
@@ -78,7 +60,7 @@ class ModelTest extends TestCase
     /**
      * @depends testAdd
      * testUpdate
-     * @author Tioncico
+     * @author  Tioncico
      * Time: 15:41
      */
     public function testUpdate()
@@ -96,7 +78,7 @@ class ModelTest extends TestCase
         $user = $testUserModel->get(['id' => $user->id]);
         $this->assertEquals('仙士可2号', $user->name);
 
-        $user = $testUserModel->where(function (QueryBuilder $builder)use ($user){
+        $user = $testUserModel->where(function (QueryBuilder $builder) use ($user) {
             $builder->where('id', $user->id);
         })->get();
         $this->assertEquals('仙士可2号', $user->name);
@@ -105,7 +87,7 @@ class ModelTest extends TestCase
     /**
      * @depends testAdd
      * testUpdateWithLimit
-     * @author XueSi
+     * @author  XueSi
      * Time: 18:04
      */
     public function testUpdateWithLimit()

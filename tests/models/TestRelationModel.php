@@ -14,6 +14,7 @@ use EasySwoole\ORM\AbstractModel;
 
 /**
  * Class TestUserModel
+ *
  * @package EasySwoole\ORM\Tests
  * @property $id
  * @property $name
@@ -23,23 +24,32 @@ use EasySwoole\ORM\AbstractModel;
  */
 class TestRelationModel extends AbstractModel
 {
-    protected $tableName='test_user_model';
+    protected $tableName = 'test_user_model';
+
+    public function __construct(array $data = [])
+    {
+        TestUserModel::create();
+
+        parent::__construct($data);
+    }
 
     public function user_list()
     {
         return $this->hasOne(TestUserListModel::class, null, 'name', 'name');
     }
 
-    public function hasOneEqName($name){
-        return $this->hasOne(TestUserListModel::class, function (QueryBuilder $queryBuilder) use ($name){
+    public function hasOneEqName($name)
+    {
+        return $this->hasOne(TestUserListModel::class, function (QueryBuilder $queryBuilder) use ($name) {
             $queryBuilder->where('name', $name);
             return $queryBuilder;
         }, 'name', 'name');
     }
 
-    public function hasManyEqName($data){
+    public function hasManyEqName($data)
+    {
         $name = $data[0];
-        return $this->hasMany(TestUserListModel::class, function (QueryBuilder $queryBuilder) use ($name){
+        return $this->hasMany(TestUserListModel::class, function (QueryBuilder $queryBuilder) use ($name) {
             $queryBuilder->where('name', $name);
             return $queryBuilder;
         }, 'name', 'name');
@@ -47,7 +57,7 @@ class TestRelationModel extends AbstractModel
 
     public function has_many_where()
     {
-        return $this->hasMany(TestUserListModel::class, function (QueryBuilder $builder){
+        return $this->hasMany(TestUserListModel::class, function (QueryBuilder $builder) {
             $builder->where("age", 21);
         }, 'name', 'name');
     }

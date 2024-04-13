@@ -8,14 +8,12 @@
 
 namespace EasySwoole\ORM\Tests;
 
-use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\Config;
 use EasySwoole\ORM\Db\Connection;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Exception\Exception;
 use EasySwoole\ORM\Tests\models\TestRelationModel;
 use EasySwoole\ORM\Tests\models\TestTimeStampModel;
-use EasySwoole\ORM\Utility\Schema\Table;
 use PHPUnit\Framework\TestCase;
 
 class ModelCloneCreateTest extends TestCase
@@ -25,7 +23,7 @@ class ModelCloneCreateTest extends TestCase
      */
     protected $connection;
 
-    protected $tableName = 'test_user_model';
+    protected $tableName = 'tiamstamp_test';
 
     protected function setUp(): void
     {
@@ -37,24 +35,8 @@ class ModelCloneCreateTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
-        $this->createtTiamstampTestTable();
-    }
 
-    public function createtTiamstampTestTable()
-    {
-        $tableDDL = new Table($this->tableName);
-        $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-        $tableDDL->colVarChar('name', 255);
-        $tableDDL->colTinyInt('age', 1);
-        $tableDDL->colDateTime('create_time')->setIsNotNull(false);
-        $tableDDL->colDateTime('update_time')->setIsNotNull(false);
-        $tableDDL->colInt('create_at', 10)->setIsNotNull(false);
-        $tableDDL->colInt('update_at', 10)->setIsNotNull(false);
-        $tableDDL->setIfNotExists();
-        $sql = $tableDDL->__createDDL();
-        $query = new QueryBuilder();
-        $query->raw($sql);
-        DbManager::getInstance()->query($query);
+        TestTimeStampModel::create();
     }
 
     /**

@@ -32,6 +32,8 @@ class QueryBuilderTest extends TestCase
         DbManager::getInstance()->addConnection($this->connection);
         $connection = DbManager::getInstance()->getConnection();
         $this->assertTrue($connection === $this->connection);
+
+        TestRelationModel::create();
     }
 
     public function testAdd()

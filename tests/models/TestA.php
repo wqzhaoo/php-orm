@@ -46,15 +46,20 @@ class TestA extends AbstractModel
 
     public function __construct(array $data = [])
     {
-        $tableDDL = new Table('test_a');
-        $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
-        $tableDDL->colVarChar('a_name', 255);
-        $tableDDL->setIfNotExists();
-        $sql = $tableDDL->__createDDL();
-
+        $sql = "SHOW TABLES LIKE '{$this->tableName}';";
         $query = new QueryBuilder();
         $query->raw($sql);
-        DbManager::getInstance()->query($query);
+        $result = DbManager::getInstance()->query($query)->getResult();
+        if (empty($result)) {
+            $tableDDL = new Table($this->tableName);
+            $tableDDL->colInt('id', 11)->setIsPrimaryKey()->setIsAutoIncrement();
+            $tableDDL->colVarChar('a_name', 255);
+            $tableDDL->setIfNotExists();
+            $sql = $tableDDL->__createDDL();
+            $query = new QueryBuilder();
+            $query->raw($sql);
+            DbManager::getInstance()->query($query);
+        }
 
         parent::__construct($data);
     }

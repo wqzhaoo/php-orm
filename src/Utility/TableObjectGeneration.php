@@ -9,13 +9,14 @@
 namespace EasySwoole\ORM\Utility;
 
 use EasySwoole\DDL\Enum\DataType;
+use EasySwoole\Mysqli\QueryBuilder;
 use EasySwoole\ORM\Db\ClientInterface;
+use EasySwoole\ORM\Db\ConnectionInterface;
+use EasySwoole\ORM\Db\Cursor;
 use EasySwoole\ORM\Db\MysqliClient;
 use EasySwoole\ORM\DbManager;
 use EasySwoole\ORM\Exception\Exception;
 use EasySwoole\ORM\Utility\Schema\Column;
-use EasySwoole\Mysqli\QueryBuilder;
-use EasySwoole\ORM\Db\ConnectionInterface;
 use EasySwoole\ORM\Utility\Schema\Table;
 
 /**
@@ -46,16 +47,20 @@ class TableObjectGeneration
         if ($this->client instanceof ClientInterface) {
             $data = $this->client->query($query);
         } else {
-            $data = $this->connection->invoke(function (MysqliClient $client) use ($query) {
+            $data = DbManager::getInstance()->invoke(function (MysqliClient $client) use ($query) {
                 return $client->query($query);
-            });
+            }, $connectionName);
         }
 
         if ($this->connection->getConfig()->isFetchMode()) {
-            $data->getResult()->setReturnAsArray(true);
-            $this->tableColumns = [];
-            while ($tem = $data->getResult()->fetch()) {
-                $this->tableColumns[] = $tem;
+            $dataResult = $data->getResult();
+            if ($dataResult instanceof Cursor) {
+                $this->tableColumns = [];
+                while ($tem = $dataResult->fetch()) {
+                    $this->tableColumns[] = $tem;
+                }
+            } else {
+                $this->tableColumns = $dataResult;
             }
         } else {
             $this->tableColumns = $data->getResult();

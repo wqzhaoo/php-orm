@@ -23,7 +23,6 @@ class CollectionTest extends TestCase
      * @var $connection Connection
      */
     protected $connection;
-    protected $tableName = 'user_test_list';
 
     protected function setUp(): void
     {
@@ -43,7 +42,6 @@ class CollectionTest extends TestCase
      */
     public function testAdd()
     {
-
         $testUserModel = new TestUserListModel();
         $testUserModel->state = 1;
         $testUserModel->name = '仙士可';
