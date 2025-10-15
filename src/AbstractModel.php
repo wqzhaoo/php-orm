@@ -734,7 +734,7 @@ abstract class AbstractModel implements ArrayAccess, JsonSerializable
         if ($results) {
             foreach ($data as $key => $val) {
                 if ((is_array($val) && isset($val["[I]"])) && isset($this->originData[$key])) {
-                    $this->data[$key] = $this->originData[$key] + $val["[I]"];
+                    $this->data[$key] = $this->originData[$key] + (int) $val["[I]"];
                 }
             }
             $this->originData = $this->data;
