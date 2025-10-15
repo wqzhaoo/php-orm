@@ -13,6 +13,18 @@ class MysqliClient extends Client implements ClientInterface, ObjectInterface
 {
     private $name;
 
+    /**
+     * Last ping time for connection keep-alive
+     * @var int
+     */
+    public $__lastPingTime = 0;
+
+    /**
+     * Transaction status flag
+     * @var bool
+     */
+    public $__inTransaction = false;
+
     public function connectionName(?string $name = null): ?string
     {
         if ($name !== null) {
@@ -151,32 +163,35 @@ class MysqliClient extends Client implements ClientInterface, ObjectInterface
 
     function gc()
     {
-//        if (isset($this->__inTransaction)) {
-//            $isInTransaction = (bool)$this->__inTransaction;
-//            if ($isInTransaction) {
-//                try {
-//                    $this->mysqlClient()->rollback();
-//                } catch (\Throwable $throwable) {
-//                    trigger_error($throwable->getMessage());
-//                }
-//            }
-//        }
+        if ($this->__inTransaction) {
+            $isInTransaction = (bool)$this->__inTransaction;
+            if ($isInTransaction) {
+                try {
+                    $this->mysqlClient()->rollback();
+                } catch (\Throwable $throwable) {
+                    trigger_error($throwable->getMessage());
+                }
+            }
+        }
 
         $this->close();
     }
 
     function objectRestore()
     {
-//        if (isset($this->__inTransaction)) {
-//            $isInTransaction = (bool)$this->__inTransaction;
-//            if ($isInTransaction) {
-//                try {
-//                    $this->mysqlClient()->rollback();
-//                } catch (\Throwable $throwable) {
-//                    trigger_error($throwable->getMessage());
-//                }
-//            }
-//        }
+        if ($this->__inTransaction) {
+            $isInTransaction = (bool)$this->__inTransaction;
+            if ($isInTransaction) {
+                try {
+                    $this->mysqlClient()->rollback();
+                } catch (\Throwable $throwable) {
+                    trigger_error($throwable->getMessage());
+                }
+            }
+        }
+        // Reset properties when object is restored to pool
+        $this->__lastPingTime = 0;
+        $this->__inTransaction = false;
     }
 
     function beforeUse(): ?bool
